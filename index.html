@@ -1,240 +1,33 @@
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <style>
-    /* Gestaltung der Website mit CSS */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-    }
-
-    .container {
-      width: 800px;
-      margin: 0 auto;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px;
-      background-color: #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .logo {
-      width: 200px;
-      height: 50px;
-    }
-
-    .nav {
-      display: flex;
-      gap: 20px;
-    }
-
-    .nav a {
-      color: #333333;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .nav a:hover {
-      color: #007bff;
-    }
-
-    .main {
-      padding: 20px;
-    }
-
-    .form {
-      width: 400px;
-      margin: 0 auto;
-      background-color: #ffffff;
-      border: 1px solid #cccccc;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .form h2 {
-      text-align: center;
-      color: #007bff;
-      margin-bottom: 20px;
-    }
-
-    .form input {
-      display: block;
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      border: 1px solid #cccccc;
-      outline: none;
-    }
-
-    .form input:focus {
-      border-color: #007bff;
-    }
-
-    .form button {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      border: none;
-      background-color: #007bff;
-      color: #ffffff;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .form button:hover {
-      background-color: #0069d9;
-    }
-
-    .form p {
-      text-align: center;
-      margin-top: 10px;
-    }
-
-    .form p a {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    .form p a:hover {
-      text-decoration: underline;
-    }
-
-    .alert {
-      padding: 10px;
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-      margin-bottom: 10px;
-    }
-
-    .success {
-      padding: 10px;
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>BRO - Login</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <img src="logo.png" alt="BRO Logo" class="logo">
-      <div class="nav">
-        <a href="home.html">Home</a>
-        <a href="about.html">Über uns</a>
-        <a href="contact.html">Kontakt</a>
-      </div>
+    <div class="container">
+        <div class="logo">
+            <img src="bro-logo.png" alt="BRO Logo">
+        </div>
+        <div class="form">
+            <h1>Login</h1>
+            <form action="login.php" method="post">
+                <div class="input-group">
+                    <label for="username">Benutzername</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Passwort</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="input-group">
+                    <button type="submit" name="login">Anmelden</button>
+                </div>
+            </form>
+            <p>Noch kein Konto? <a href="register.php">Registrieren</a></p>
+        </div>
     </div>
-    <div class="main">
-      <?php
-        // Verbindung zur Datenbank
-        $db = new mysqli("localhost", "root", "", "bro");
-        if ($db->connect_error) {
-          die("Verbindung fehlgeschlagen: " . $db->connect_error);
-        }
-
-        // Registrierung von Benutzern
-        if (isset($_POST["register"])) {
-          $username = $_POST["username"];
-          $email = $_POST["email"];
-          $password = $_POST["password"];
-          $confirm = $_POST["confirm"];
-
-          // Überprüfung der Eingaben
-          $errors = [];
-          if (empty($username)) {
-            $errors[] = "Bitte geben Sie einen Benutzernamen ein.";
-          }
-          if (empty($email)) {
-            $errors[] = "Bitte geben Sie eine E-Mail-Adresse ein.";
-          }
-          if (empty($password)) {
-            $errors[] = "Bitte geben Sie ein Passwort ein.";
-          }
-          if ($password != $confirm) {
-            $errors[] = "Die Passwörter stimmen nicht überein.";
-          }
-
-          // Überprüfung der Verfügbarkeit des Benutzernamens und der E-Mail-Adresse
-          $sql = "SELECT * FROM users WHERE username = ? OR email = ?";
-          $stmt = $db->prepare($sql);
-          $stmt->bind_param("ss", $username, $email);
-          $stmt->execute();
-          $result = $stmt->get_result();
-          if ($result->num_rows > 0) {
-            $errors[] = "Der Benutzername oder die E-Mail-Adresse ist bereits vergeben.";
-          }
-          $stmt->close();
-
-          // Registrierung des Benutzers, wenn keine Fehler vorliegen
-          if (empty($errors)) {
-            // Verschlüsselung des Passworts
-            $password = password_hash($password, PASSWORD_DEFAULT);
-
-            // Einfügen des Benutzers in die Datenbank
-            $sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
-            $stmt = $db->prepare($sql);
-            $stmt->bind_param("sss", $username, $email, $password);
-            $stmt->execute();
-            $stmt->close();
-
-            // Anzeige einer Erfolgsmeldung
-            echo "<div class='success'>Sie haben sich erfolgreich registriert. Bitte <a href='login.php'>melden Sie sich an</a>.</div>";
-          }
-          else {
-            // Anzeige der Fehlermeldungen
-            foreach ($errors as $error) {
-              echo "<div class='alert'>$error</div>";
-            }
-          }
-        }
-
-        // Anmeldung von Benutzern
-        if (isset($_POST["login"])) {
-          $username = $_POST["username"];
-          $password = $_POST["password"];
-
-          // Überprüfung der Eingaben
-          $errors = [];
-          if (empty($username)) {
-            $errors[] = "Bitte geben Sie einen Benutzernamen ein.";
-          }
-          if (empty($password)) {
-            $errors[] = "Bitte geben Sie ein Passwort ein.";
-          }
-
-          // Überprüfung der Anmeldedaten
-          if (empty($errors)) {
-            $sql = "SELECT * FROM users WHERE username = ?";
-            $stmt = $db->prepare($sql);
-            $stmt->bind_param("s", $username);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result->num_rows > 0) {
-              $user = $result->fetch_assoc();
-              // Überprüfung des Passworts
-              if (password_verify($password, $user["password"])) {
-                // Starten einer Sitzung
-                session_start();
-                $_SESSION["username"] = $user["username"];
-                $_SESSION["email"] = $user["email"];
-
-                // Weiterleitung zur Home-Seite
-                header("Location: home.html");
-                exit();
-              }
-              else {
-                $errors[] = "Das Passwort ist falsch.";
-              }
-            }
-            else {
-              $errors[] = "Der Benutzername ist nicht vorhanden.";
-            }
-            $stmt->close();
-          }
-
+</body>
+</html>
 
