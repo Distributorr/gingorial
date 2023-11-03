@@ -1,0 +1,91 @@
+/* style.css */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    margin-top: 20px;
+}
+
+.logo img {
+    width: 200px;
+    height: auto;
+}
+
+.form {
+    margin-top: 40px;
+    width: 100%;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.form h1 {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    color: #333333;
+}
+
+.input-group {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #333333;
+}
+
+.input-group input {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #333333;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.input-group button {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #333333;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.input-group button:hover {
+    background-color: #444444;
+}
+
+.form p {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #333333;
+}
+
+.form p a {
+    color: #333333;
+    text-decoration: none;
+}
+
+.form p a:hover {
+    text-decoration: underline;
+}
