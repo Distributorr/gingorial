@@ -1,0 +1,106 @@
+<html>
+<head>
+    <style>
+        /* CSS code to style the website */
+        body {
+            background-color: lightblue;
+        }
+        h1 {
+            text-align: center;
+        }
+        #finger {
+            width: 200px;
+            height: 200px;
+            margin: auto;
+            border: 5px solid black;
+            border-radius: 50%;
+        }
+        #result {
+            text-align: center;
+            font-size: 24px;
+        }
+    </style>
+    <script>
+        // JavaScript code to handle the fingerprint scanner
+        // This code uses the Web Authentication API, which is supported by most modern browsers
+        // For more information, see [Web Authentication API]
+        function scanFinger() {
+            // Create a new credential request options object
+            var options = {
+                publicKey: {
+                    // Specify the challenge, which is a random value that will be signed by the authenticator
+                    challenge: new Uint8Array([/* some random bytes */]),
+                    // Specify the relying party, which is the entity that requests the authentication
+                    rp: {
+                        name: "Fingerprint Scanner Website"
+                    },
+                    // Specify the user, which is the entity that is being authenticated
+                    user: {
+                        id: new Uint8Array([/* some random bytes */]),
+                        name: "user@example.com",
+                        displayName: "User"
+                    },
+                    // Specify the authenticator selection criteria, which is the type of authenticator that will be used
+                    authenticatorSelection: {
+                        // Require a platform authenticator, such as a built-in fingerprint scanner
+                        authenticatorAttachment: "platform",
+                        // Require user verification, which is the process of confirming the user's identity
+                        userVerification: "required"
+                    },
+                    // Specify the attestation type, which is the format of the data returned by the authenticator
+                    attestation: "none",
+                    // Specify the public key credential parameters, which are the cryptographic algorithms that will be used
+                    pubKeyCredParams: [
+                        // Prefer ES256 algorithm, which is based on elliptic curve cryptography
+                        {type: "public-key", alg: -7}
+                    ]
+                }
+            };
+            // Request a new credential from the authenticator
+            navigator.credentials.create(options)
+                .then(function (credential) {
+                    // If the credential is successfully created, display the result on the website
+                    var result = document.getElementById("result");
+                    result.innerHTML = "Fingerprint scanned successfully!";
+                    // Send the credential to the server for verification and further processing
+                    // This code uses the Fetch API, which is a modern way of making HTTP requests
+                    // For more information, see [Fetch API]
+                    var url = "verify.php"; // The URL of the server-side script that will verify the credential
+                    var data = credential; // The credential object that will be sent to the server
+                    fetch(url, {
+                        method: "POST", // The HTTP method to use
+                        body: data // The data to send
+                    })
+                        .then(function (response) {
+                            // If the server responds, display the response on the website
+                            return response.text();
+                        })
+                        .then(function (text) {
+                            result.innerHTML = text;
+                        })
+                        .catch(function (error) {
+                            // If there is an error, display the error message on the website
+                            result.innerHTML = error.message;
+                        });
+                })
+                .catch(function (error) {
+                    // If the credential creation fails, display the error message on the website
+                    var result = document.getElementById("result");
+                    result.innerHTML = error.message;
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>Fingerprint Scanner Website</h1>
+    <div id="finger" onclick="scanFinger()">
+        <!-- This is a placeholder image for the fingerprint scanner -->
+        <!-- You can replace it with your own image or design -->
+        <img src="^3^" alt="Finger">
+    </div>
+    <div id="result">
+        <!-- This is where the result of the fingerprint scan will be displayed -->
+        Click on the finger to scan your fingerprint
+    </div>
+</body>
+</html>
